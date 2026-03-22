@@ -32,6 +32,14 @@ Predicting retail demand is notoriously difficult due to **high cardinality** (t
 * **Architecture:** A **Stacked Ensemble** (70% XGBoost / 30% LSTM) that merges tree-based logic with temporal neurons.
 * **Key Result:** Reduced LSTM error by **48%** and achieved a final **WMAE of 2131.56**.
 
+### **📁 [Data](./Data/)**
+
+*Training and test CSVs* (`train`, `test`, `features`, `stores`) used by the modeling pipelines.
+
+### **📁 [Academic_Documents](./Academic_Documents/)**
+
+*Course and planning artifacts:* term project proposal, planning documents, and MGTA 611 assignment materials (PDF/DOCX)—kept separate from code for a clean repo layout.
+
 ---
 
 ## 🛠 Technical Stack
