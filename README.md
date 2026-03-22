@@ -1,84 +1,81 @@
-# Holiday Inventory Optimization via Demand Forecasting
-
-**Course:** MGTA 611 — Business Application of Artificial Intelligence  
-**Theme:** Use **machine learning** and **deep learning** to forecast **weekly department-level sales** at Walmart-scale retail, with emphasis on **holiday weeks** where errors are most costly.
+This is the **"Homepage" README** for your GitHub repository. It acts as the high-level guide that explains the journey from Version 1 to Version 2, making it clear to any recruiter or professor that this wasn't just one attempt—it was an **iterative engineering process.**
 
 ---
 
-## What this project is
+# 🛒 Walmart Retail Demand Forecasting: An Iterative AI Approach
 
-Retail demand is volatile around **Thanksgiving, Christmas, Super Bowl**, and other labeled holiday periods. Wrong inventory leads to **stockouts** (lost sales, poor customer experience) or **overstock** (markdowns, margin loss). This repository implements a **data-driven forecasting pipeline** on the **Walmart recruiting store-sales** style dataset: weekly sales for many **store × department** time series, plus **economic and promotional features**.
+### *Solving the $1.7T Inventory Distortion Problem with Hybrid Deep Learning*
 
-We treat the problem as **supervised regression**: predict `Weekly_Sales` from past sales, calendar features, store metadata, fuel/CPI/unemployment, and markdown/promotion fields—then evaluate with **Weighted Mean Absolute Error (WMAE)** that **up-weights holiday weeks**.
+## 🌟 Project Overview
 
----
+This repository contains a two-phase development cycle for predicting weekly sales across 45 Walmart stores and 99 departments. The project moves from an initial **Deep Learning Baseline (V1)** to a sophisticated **Stacked Ensemble System (V2)** designed to overcome the "Small Data" challenges of the 2-year Walmart dataset.
 
-## What we did (high level)
+### **The Core Challenge**
 
-1. **Data integration** — Merge sales (`train.csv` / `test.csv`) with `features.csv` (macro, weather, markdowns) and `stores.csv` (format type, size).
-2. **Missing promotions** — Markdown columns are often missing early in the sample; we use **binary masks** so “missing” is not confused with “no promotion.”
-3. **Baselines & challengers** — **XGBoost** with holiday-weighted training; **neural model** with **entity embeddings** for `Store` and `Dept` and an **LSTM** branch on continuous features.
-4. **Metric** — **WMAE** with weight **5×** on holiday weeks and **1×** otherwise, matching the business priority to be accurate when it matters most.
-5. **Iteration (Version 2)** — Address **sparse holiday signal** with **holiday influence features**, **log-transformed targets**, **economic × holiday interactions**, and a **stacked ensemble** plus **SHAP** on a refined feature set for interpretation.
+Predicting retail demand is notoriously difficult due to **high cardinality** (thousands of store-dept combinations) and **extreme seasonality** (holidays like Black Friday and Christmas). Traditional models often fail to capture the "ramp-up" period before these events when data is limited to only two years.
 
 ---
 
-## Repository layout
+## 📂 Repository Structure
 
-```
-├── README.md                 ← You are here (project map)
-├── Data/                     ← CSVs: train, test, features, stores
-├── Version_1/               ← Baseline pipeline: notebook + script + README
-├── Version_2/               ← Enhanced strategy: notebook + script + README
-├── MGTA 611 Term Project Proposal.pdf
-├── Project Planning .pdf
-└── … (other course documents)
-```
+### **📁 [Version_1: The Baseline Exploration](./Version_1/)**
 
-| Path | Purpose |
-|------|---------|
-| **`Version_1/`** | **Proof-of-concept:** binary markdown masks, holiday proximity, lag-52, XGBoost + embedding LSTM, WMAE, SHAP on XGBoost. |
-| **`Version_2/`** | **Production strategy:** holiday “influence” waves, log targets, interaction features, ensemble, final XGBoost + SHAP on 13 numeric features. |
+*Focus: Architecture and Data Integrity.*
 
----
+* Implemented **Binary Masking** for missing Markdown data.
+* Developed a **Multi-Input Functional API** (TensorFlow) using **Entity Embeddings** for Stores/Depts.
+* Established the **Weighted Mean Absolute Error (WMAE)** benchmark.
+* **Key Result:** Identified "Temporal Sparsity" as the primary bottleneck for LSTM performance.
 
-## Data (short reference)
+### **📁 [Version_2: The Production Solution](./Version_2/)**
 
-| File | Role |
-|------|------|
-| `Data/train.csv` | Store, Dept, Date, **Weekly_Sales**, IsHoliday |
-| `Data/test.csv` | Same keys without `Weekly_Sales` (scoring / deployment) |
-| `Data/features.csv` | Store, Date: temperature, fuel, markdowns, CPI, unemployment, IsHoliday |
-| `Data/stores.csv` | Store: Type, Size |
+*Focus: Feature Engineering and Model Stacking.*
+
+* **Innovation:** Engineered **Seasonal Influence Waves** (21-day ramp-ups) to solve data scarcity.
+* **Innovation:** Implemented **Log-Space Target Scaling** for smoother convergence.
+* **Architecture:** A **Stacked Ensemble** (70% XGBoost / 30% LSTM) that merges tree-based logic with temporal neurons.
+* **Key Result:** Reduced LSTM error by **48%** and achieved a final **WMAE of 2131.56**.
 
 ---
 
-## How to run (quick)
+## 🛠 Technical Stack
 
-- **Python 3.10+** recommended. Install **pandas**, **numpy**, **scikit-learn**, **xgboost**, **tensorflow**, **matplotlib**, **seaborn**, **shap** (for interpretability cells).
-- Place CSVs under `Data/` and either:
-  - Run notebooks from the repo root and adjust `read_csv` paths to `Data/train.csv`, etc., or  
-  - Copy/link CSVs next to the script if the script expects `train.csv` in the current directory (see each version’s README).
-
----
-
-## What we achieved
-
-- A **reproducible** two-stage story: **V1** establishes **embeddings + WMAE + interpretable tree baseline**; **V2** responds to **faculty feedback** on **holiday data sparsity** with **richer holiday features** and a **combined modeling strategy**.
-- **Business-aligned evaluation** (holiday-weighted error), not only raw MAE.
-- **Interpretability** via **SHAP** on gradient-boosted models to support **inventory and markdown** discussion in the report and presentation.
+* **Languages:** Python (Pandas, NumPy, Scikit-Learn)
+* **Deep Learning:** TensorFlow / Keras (LSTM, Embedding Layers)
+* **Machine Learning:** XGBoost (Gradient Boosting)
+* **Interpretability:** SHAP (Shapley Additive Explanations)
+* **Visualization:** Matplotlib, Seaborn
 
 ---
 
-## Team & acknowledgments
+## 📈 Methodology Highlights
 
-Project work by the MGTA 611 group (see proposal PDF for names). Course materials reference **Michael Blair**, Wilfrid Laurier University.
+### **1. Addressing the "Holiday Effect"**
 
-**License / use:** Academic course project; dataset subject to original **Walmart / Kaggle** competition terms if used outside class.
+Instead of using simple binary flags, we treated holidays as **Seasonal Waves**. This allowed our models to learn the shopping momentum leading up to major events, effectively tripling our high-importance training signals.
+
+### **2. Why an Ensemble?**
+
+We discovered that XGBoost was excellent at handling historical averages, while the LSTM was better at finding non-linear patterns in economic data (CPI, Unemployment). By **Stacking** them, we canceled out individual model biases.
 
 ---
 
-## Where to read next
+## 🏆 Final Performance Summary
 
-- **Version 1 details:** [`Version_1/README.md`](Version_1/README.md)  
-- **Version 2 details:** [`Version_2/README.md`](Version_2/README.md)
+| Model | Version | WMAE (Lower is Better) |
+| :--- | :--- | :--- |
+| **Baseline LSTM** | V1 | 5506.86 |
+| **Optimized LSTM** | V2 | 2819.43 |
+| **Final Stacked Ensemble** | **V2** | **2131.56** |
+
+---
+
+## 🚀 How to Use
+
+1. **Version 1:** Explore the foundational notebooks to see the initial architecture and data cleaning — see [`Version_1/README.md`](./Version_1/README.md).
+2. **Version 2:** Review the final production-ready scripts and the SHAP analysis for feature importance — see [`Version_2/README.md`](./Version_2/README.md).
+3. **Data:** Place `train.csv`, `test.csv`, `stores.csv`, and `features.csv` in the **`Data/`** folder (as in this repo), or update `read_csv` paths in each script/notebook to match your layout. Version 1 scripts often expect CSVs in the working directory unless paths are adjusted; Version 2 Colab exports may use `/content/` — change to `Data/...` for local runs.
+
+---
+
+**Course:** MGTA 611 — Business Application of Artificial Intelligence · Wilfrid Laurier University
