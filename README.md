@@ -1,7 +1,3 @@
-This is the **"Homepage" README** for your GitHub repository. It acts as the high-level guide that explains the journey from Version 1 to Version 2, making it clear to any recruiter or professor that this wasn't just one attempt—it was an **iterative engineering process.**
-
----
-
 # 🛒 Walmart Retail Demand Forecasting: An Iterative AI Approach
 
 ### *Solving the $1.7T Inventory Distortion Problem with Hybrid Deep Learning*
