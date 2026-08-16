@@ -1,60 +1,32 @@
-# 🚀 Project Walmart: Holiday Sales Forecasting (Version 2)
+# Version 2: Stacked Ensemble
 
-### *Sub-title: Overcoming Data Scarcity with Seasonal Waves & Ensemble Stacking*
+Production-oriented forecasting pass for the same Walmart weekly sales task. Built to handle a short two-year history and sparse holiday cycles.
 
-## 📖 Project Overview
+## Changes from V1
 
-Version 2 (V2) represents the transition from an experimental baseline to a **Production-Ready Forecasting System**. This version was specifically engineered to solve the **"Small Data" problem** inherent in the 2-year Walmart dataset, where traditional LSTMs struggle to identify holiday patterns with only two observed cycles.
+1. **Seasonal influence waves:** 21-day ramps into Christmas, Thanksgiving, and Super Bowl instead of binary holiday flags.
+2. **Log-space targets:** `np.log1p` on sales for more stable LSTM training.
+3. **Economic interactions:** Features that combine holidays with CPI and unemployment.
+4. **Stacked ensemble:** 70% XGBoost + 30% LSTM.
 
-## 🛠 Strategic Innovations (The V2 Pivot)
+## Results
 
-### **1. Seasonal Influence Waves (The Professor's Fix)**
+| Model | WMAE |
+| --- | ---: |
+| Baseline LSTM (V1) | 5506.86 |
+| Optimized LSTM (V2) | 2819.43 |
+| Final stacked ensemble | 2131.56 |
 
-To address faculty feedback regarding limited holiday data, we moved away from binary "0 or 1" holiday flags.
+SHAP analysis shows year-over-year lag features as primary drivers, with the seasonal wave features contributing meaningful holiday signal.
 
-* **The Strategy:** We engineered **21-day "Ramp-up" Windows** for Christmas, Thanksgiving, and the Super Bowl.
-* **The Impact:** This tripled the amount of high-importance training data, allowing the model to learn the *momentum* of holiday shopping rather than just a single-day spike.
+## Stack
 
-### **2. Log-Space Target Scaling**
+Python, pandas, TensorFlow/Keras, XGBoost, SHAP
 
-Deep Learning models often struggle with high-variance targets (like sales ranging from $\$0$ to $\$200,000$).
+## How to run
 
-* **The Strategy:** We transformed the target variable using `np.log1p`.
-* **The Impact:** This stabilized the LSTM's loss function, focusing the model on **percentage growth** rather than raw dollar amounts, leading to a much smoother convergence.
+1. Point scripts and notebooks at the CSVs in `../Data/`.
+2. Run the V2 forecasting notebook or script in this folder.
+3. Review SHAP outputs for feature importance.
 
-### **3. Economic Interaction Terms**
-
-We recognized that holidays don't happen in a vacuum.
-
-* **The Strategy:** Created interaction features like `Holiday_Unemployment_Impact`.
-* **The Impact:** This allowed the model to understand how the macro-economy (Unemployment/CPI) dampens or amplifies the "Seasonal Wave" effect.
-
----
-
-## 🧠 Model Architecture: The Stacked Ensemble
-
-V2's final output is not a single model, but a **Hybrid Stacked Ensemble**:
-
-1. **XGBoost (V2):** Captures the rigid, tree-based logic of historical averages.
-2. **LSTM (V2):** Captures the non-linear, temporal relationships in the economic and seasonal data.
-3. **The Blend:** A **70/30 weighted average** that balances the strengths of both, significantly reducing individual model bias.
-
----
-
-## 📊 Final Results & Performance
-
-* **Baseline LSTM (V1):** 5506.86 WMAE
-* **Optimized LSTM (V2):** 2819.43 WMAE (**+48.8% Improvement**)
-* **Final Stacked Ensemble:** **2131.56 WMAE**
-
-### **Model Explainability (SHAP)**
-
-Using SHAP values, we confirmed that while `Lag_52` (Year-over-Year) remains the primary driver, our new `Fuel_Price_Trend` and `Holiday_Influence` features rank in the top 10 most impactful variables.
-
----
-
-## 📂 Files in this Folder
-
-* `Demand_Forecasting_V2.ipynb`: The high-performance ensemble notebook.
-* `Demand_Forecasting_V2.py`: The Python production script.
-* `README.md`: This documentation.
+See the root [README](../README.md) for the full project summary.
